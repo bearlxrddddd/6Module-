@@ -1,32 +1,12 @@
 <?php
 //CONNECT DB
-$host = 'localhost';
-$dbname = 'school_db';
-$user = 'root';
-$pass = '';
-$charset = 'utf8mb4';
-
-$dsn = "mysql:host=$host;dbname=$dbname; charset=$charset";
-$options = [
-    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-    PDO::ATTR_EMULATE_PREPARES => false,
-    ];
-
-    try {
-        $pdo = NEW PDO($dsn, $user, $pass, $options);
-    echo "Подключение успешно!";
-        } catch (PDOException $e) {
-        die("Ошибка подключения:" . $e -> getMessage());
-    }
+require ('config.php');
 //selectAll
 
-$stmt = $pdo -> query('SELECT * from student ');
+$stmt = $pdo -> query('SELECT * from students ');
 $students = $stmt -> fetchAll();
 //вывод всех данных с бд
-foreach ($students as $student) {
-    echo $student['group_id'] . $student['name'];
-}
+
 ?>
 <!-- FORM -->
 <!DOCTYPE html>
@@ -37,7 +17,12 @@ foreach ($students as $student) {
     <title>Document</title>
 </head>
 <body>
-    <form action="" method="post">
-    
+    <a href="add.php">Добавить студента</a><br>
+    <?php foreach ($students as $student) { ?>
+    <?php echo $student['group_id'] . $student['name'] . '<br>'; ?>
+<?php  } ?>
+<a href="update.php?id=<?php $student['id'] ?>">Изменить</a>
+<a href="delete.php?id=<?php $student['id'] ?>"
+    onclick="return confirm('Удалить?')">Удалить</a>
 </body>
 </html>

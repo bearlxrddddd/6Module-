@@ -18,3 +18,4 @@ $options = [
         } catch (PDOException $e) {
         die("Ошибка подключения:" . $e -> getMessage());
     }
+

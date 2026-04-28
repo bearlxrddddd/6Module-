@@ -1,5 +1,32 @@
 <?php
-require ('config.php');
+require 'config.php'; 
 
 $id = $_GET['id'];
-$groups = $pdo -> query('SELECT * FROM groups WHERE id = :id')-> fetchAll();
+$stmt = $pdo -> prepare('SELECT * FROM students WHERE id = :id');
+$stmt -> execute(['id' => $id]);
+$student = $stmt ->fetch();
+
+$groups = $pdo -> query('SELECT id, name FROM groups ') -> fetchAll();
+?>
+<h1>Редактировать студента</h1>
+    
+    <form method="POST" action="update_student.php">
+        <input type="hidden" name="id" value="<?= $student['id'] ?>">
+        
+        <label>Имя студента:</label><br>
+        <input type="text" name="name" value="<?= htmlspecialchars($student['name']) ?>" required><br><br>
+        
+        <label>Группа:</label><br>
+        <select name="group_id" required>
+            <option value="">Выберите группу</option>
+            <?php foreach ($groups as $group): ?>
+                <option value="<?= $group['id'] ?>" 
+                    <?= $group['id'] == $student['group_id'] ? 'selected' : '' ?>>
+                    <?= htmlspecialchars($group['name']) ?>
+                </option>
+            <?php endforeach; ?>
+        </select><br><br>
+        
+        <button type="submit">Сохранить</button>
+        <a href="index.php">Отмена</a>
+    </form>

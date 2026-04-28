@@ -1,28 +1,42 @@
 <?php
 //CONNECT DB
 require ('config.php');
+
 //selectAll
 
-$stmt = $pdo -> query('SELECT * from students ');
+$stmt = $pdo->query("
+    SELECT students.id, students.name, groups.name AS group_name
+    FROM students
+    LEFT JOIN groups ON students.group_id = groups.id
+");
+
 $students = $stmt -> fetchAll();
-//вывод всех данных с бд
+//вывод всех данных с бд        
 
 ?>
 <!-- FORM -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <a href="add.php">Добавить студента</a><br>
-    <?php foreach ($students as $student) { ?>
-    <?php echo $student['group_id'] . $student['name'] . '<br>'; ?>
-<?php  } ?>
-<a href="update.php?id=<?php $student['id'] ?>">Изменить</a>
-<a href="delete.php?id=<?php $student['id'] ?>"
-    onclick="return confirm('Удалить?')">Удалить</a>
+<a href="add.php">Добавить студента</a>
+    
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Имя</th>
+            <th>Группа</th>
+            <th>Действия</th>
+        </tr>
+        <?php foreach ($students as $student): ?>
+        <tr>
+            <td><?= $student['id'] ?></td>
+            <td><?= htmlspecialchars($student['name']) ?></td>
+            <td><?= $student['group_name'] ?? '—' ?></td>
+            <td class="actions">
+                <a href="edit.php?id=<?= $student['id'] ?>">Изменить</a>
+                <a href="delete.php?id=<?= $student['id'] ?>" 
+                    onclick="return confirm('Удалить студента?')">Удалить</a>
+            </td>
+        </tr>
+        <?php endforeach; ?>
+    </table>
+
 </body>
 </html>
